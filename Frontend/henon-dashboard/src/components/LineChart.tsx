@@ -2,10 +2,11 @@ import { Line } from "react-chartjs-2"
 import { ChartData, ChartOptions } from "chart.js"
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from "chart.js"
 import { useEffect, useState } from "react"
+import crosshair, { CrosshairOptions } from "chartjs-plugin-crosshair"
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, crosshair)
 
-const options: ChartOptions<"line"> = {
+const options: ChartOptions<"line"> & { plugins: { crosshair: CrosshairOptions } } = {
   responsive: true,
   plugins: {
     legend: {
@@ -15,9 +16,22 @@ const options: ChartOptions<"line"> = {
       display: true,
       text: "Currency Exchange Rates",
     },
+    tooltip: {
+      mode: "index",
+      intersect: false,
+    },
+    crosshair: {
+      zoom: {
+        enabled: true,
+      },
+      snap: {
+        enabled: true,
+      },
+    },
   },
   scales: {
     x: {
+      stacked: true,
       title: {
         display: true,
         text: "Date",

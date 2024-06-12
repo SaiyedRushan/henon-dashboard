@@ -18,12 +18,14 @@
     "ag-grid-react": "^31.3.2",
     "axios": "^1.7.2",
     "chart.js": "^4.4.3",
+    "chartjs-plugin-crosshair": "^2.0.0",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
+    "@types/chartjs-plugin-crosshair": "^1.1.4",
     "@types/react": "^18.2.66",
     "@types/react-chartjs-2": "^2.5.7",
     "@types/react-dom": "^18.2.22",
