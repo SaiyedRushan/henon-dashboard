@@ -21,17 +21,31 @@ export default function Grid({ data, currencies, baseCurrency }: { data: any; cu
         ...data.rates[date],
       }))
 
-      const targetCurrencies = currencies.filter((currency) => currency !== baseCurrency).join(",")
-      const colDefs = [{ headerName: "Date", field: "date" }, ...targetCurrencies.split(",").map((currency) => ({ headerName: currency, field: currency }))]
+      const targetCurrencies = currencies.filter((currency) => currency !== baseCurrency)
+      const colDefs = [{ headerName: "Date", field: "date" }, ...targetCurrencies.map((currency) => ({ headerName: currency, field: currency }))]
 
       setColDefs(colDefs)
       setRowData(rowData as any)
     }
   }, [data, baseCurrency, currencies])
 
+  const saveColumnState = (event: any) => {
+    localStorage.setItem("gridState", JSON.stringify(event.api.getColumnState()))
+  }
+
+  const onFirstDataRendered = (event: any) => {
+    const savedState = localStorage.getItem("gridState")
+    if (savedState) {
+      event.api.applyColumnState({
+        state: JSON.parse(savedState),
+        applyOrder: true,
+      })
+    }
+  }
+
   return (
     <div className='ag-theme-quartz' style={{ height: 400, minWidth: 250 }}>
-      <AgGridReact rowData={rowData} columnDefs={colDefs} defaultColDef={defaultColDef} autoSizeStrategy={{ type: isMobile ? "fitCellContents" : "fitGridWidth" }} />
+      <AgGridReact rowData={rowData} columnDefs={colDefs} defaultColDef={defaultColDef} autoSizeStrategy={{ type: isMobile ? "fitCellContents" : "fitGridWidth" }} onFirstDataRendered={onFirstDataRendered} onColumnMoved={saveColumnState} onSortChanged={saveColumnState} />
     </div>
   )
 }
