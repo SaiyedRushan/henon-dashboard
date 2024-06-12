@@ -1,9 +1,8 @@
 import { AgGridReact } from "ag-grid-react"
 import "ag-grid-community/styles/ag-grid.css"
 import "ag-grid-community/styles/ag-theme-quartz.css"
-import { ColDef } from "ag-grid-community"
+import { ColDef, FirstDataRenderedEvent } from "ag-grid-community"
 import { useEffect, useState } from "react"
-import useDeviceType from "../hooks/useDeviceType"
 
 export default function Grid({ data, currencies, baseCurrency }: { data: any; currencies: any[]; baseCurrency: string }) {
   const [rowData, setRowData] = useState([])
@@ -12,7 +11,6 @@ export default function Grid({ data, currencies, baseCurrency }: { data: any; cu
     sortable: true,
     filter: true,
   }
-  const isMobile = useDeviceType()
 
   useEffect(() => {
     if (data) {
@@ -33,7 +31,7 @@ export default function Grid({ data, currencies, baseCurrency }: { data: any; cu
     localStorage.setItem("gridState", JSON.stringify(event.api.getColumnState()))
   }
 
-  const onFirstDataRendered = (event: any) => {
+  const onFirstDataRendered = (event: FirstDataRenderedEvent) => {
     const savedState = localStorage.getItem("gridState")
     if (savedState) {
       event.api.applyColumnState({
@@ -41,11 +39,12 @@ export default function Grid({ data, currencies, baseCurrency }: { data: any; cu
         applyOrder: true,
       })
     }
+    event.api.sizeColumnsToFit()
   }
 
   return (
     <div className='ag-theme-quartz' style={{ height: 400, minWidth: 250 }}>
-      <AgGridReact rowData={rowData} columnDefs={colDefs} defaultColDef={defaultColDef} autoSizeStrategy={{ type: isMobile ? "fitCellContents" : "fitGridWidth" }} onFirstDataRendered={onFirstDataRendered} onColumnMoved={saveColumnState} onSortChanged={saveColumnState} />
+      <AgGridReact rowData={rowData} columnDefs={colDefs} defaultColDef={defaultColDef} onFirstDataRendered={onFirstDataRendered} onColumnMoved={saveColumnState} onSortChanged={saveColumnState} />
     </div>
   )
 }
