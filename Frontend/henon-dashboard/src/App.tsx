@@ -91,7 +91,9 @@ function App() {
         </Button>
       </Box>
 
-      <LineChart data={data} currencies={currencies} baseCurrency={baseCurrency} />
+      <div>
+        <LineChart data={data} currencies={currencies} baseCurrency={baseCurrency} />
+      </div>
 
       <Grid data={data} currencies={currencies} baseCurrency={baseCurrency} />
     </Container>
