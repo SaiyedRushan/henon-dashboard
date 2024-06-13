@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    command: gunicorn server.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - ./backend:/app
+    env_file:
+      - ./Backend/.env
+    ports:
+      - 8000:8000
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./Frontend/henon-dashboard
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
