@@ -30,7 +30,9 @@ function App() {
 
   return (
     <Container>
-      <h1>Henon Dashboard</h1>
+      <Box display={"flex"} justifyContent={"center"}>
+        <h1>Exchange Rates</h1>
+      </Box>
 
       <Box gap={2} m={1} display={"flex"} justifyContent={"center"}>
         <TextField
