@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 
-import { Box, Container, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material"
+import { Box, Button, Container, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material"
 import useCurrencyData from "./hooks/useCurrencyData"
 import LineChart from "./components/LineChart"
 import Grid from "./components/Grid"
@@ -16,11 +16,23 @@ function App() {
 
   const data = useCurrencyData(baseCurrency, currencies, startDate, endDate)
 
+  const getDateMonthsAgo = (monthsAgo: number): string => {
+    const date = new Date()
+    date.setMonth(date.getMonth() - monthsAgo)
+    return date.toISOString().split("T")[0]
+  }
+
+  const getDateYearsAgo = (yearsAgo: number): string => {
+    const date = new Date()
+    date.setFullYear(date.getFullYear() - yearsAgo)
+    return date.toISOString().split("T")[0]
+  }
+
   return (
     <Container>
       <h1>Henon Dashboard</h1>
 
-      <Box gap={2} m={1} display={"flex"}>
+      <Box gap={2} m={1} display={"flex"} justifyContent={"center"}>
         <TextField
           id='startDate'
           label='Start Date'
@@ -59,6 +71,24 @@ function App() {
             ))}
           </Select>
         </FormControl>
+      </Box>
+
+      <Box justifyContent={"center"} display={"flex"} m={3} gap={2}>
+        <Button variant='contained' onClick={() => setStartDate(getDateMonthsAgo(1))}>
+          1M
+        </Button>
+        <Button variant='contained' onClick={() => setStartDate(getDateMonthsAgo(3))}>
+          3M
+        </Button>
+        <Button variant='contained' onClick={() => setStartDate(getDateMonthsAgo(6))}>
+          6M
+        </Button>
+        <Button variant='contained' onClick={() => setStartDate(getDateYearsAgo(1))}>
+          1Y
+        </Button>
+        <Button variant='contained' onClick={() => setStartDate(twoYearsAgo)}>
+          2Y
+        </Button>
       </Box>
 
       <LineChart data={data} currencies={currencies} baseCurrency={baseCurrency} />
