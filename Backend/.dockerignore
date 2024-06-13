@@ -1,0 +1,31 @@
+# Python and Django specific files and folders
+
+venv/
+
+**pycache**/
+_.pyc
+_.pyo
+_.pyd
+_.db
+\*.sqlite3
+
+# IDE and editor specific files
+
+.idea/
+.vscode/
+\*.swp
+
+# Docker specific files
+
+Dockerfile
+docker-compose.yml
+
+# Git specific files
+
+.git/
+.gitignore
+
+# OS generated files
+
+.DS_Store
+Thumbs.db
