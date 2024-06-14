@@ -1,8 +1,10 @@
 import { AgGridReact } from "ag-grid-react"
 import "ag-grid-community/styles/ag-grid.css"
 import "ag-grid-community/styles/ag-theme-quartz.css"
+import "ag-grid-community/styles/ag-theme-material.css"
 import { ColDef, FirstDataRenderedEvent } from "ag-grid-community"
 import { useEffect, useState } from "react"
+import { useThemeContext } from "../contexts/ThemeContext"
 
 export default function Grid({ data, currencies, baseCurrency }: { data: any; currencies: any[]; baseCurrency: string }) {
   const [rowData, setRowData] = useState([])
@@ -11,6 +13,7 @@ export default function Grid({ data, currencies, baseCurrency }: { data: any; cu
     sortable: true,
     filter: true,
   }
+  const { mode } = useThemeContext()
 
   useEffect(() => {
     if (data) {
@@ -43,7 +46,7 @@ export default function Grid({ data, currencies, baseCurrency }: { data: any; cu
   }
 
   return (
-    <div className='ag-theme-quartz' style={{ height: 400, minWidth: 250 }}>
+    <div className={mode == "light" ? "ag-theme-quartz" : "ag-theme-material-dark"} style={{ height: 400, minWidth: 250 }}>
       <AgGridReact rowData={rowData} columnDefs={colDefs} defaultColDef={defaultColDef} onFirstDataRendered={onFirstDataRendered} onColumnMoved={saveColumnState} onSortChanged={saveColumnState} />
     </div>
   )

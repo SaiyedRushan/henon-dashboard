@@ -1,10 +1,13 @@
 import { useMemo, useState } from "react"
 
-import { Box, Button, Container, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material"
+import { Box, Button, Container, CssBaseline, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material"
 import useCurrencyData from "./hooks/useCurrencyData"
 import LineChart from "./components/LineChart"
 import Grid from "./components/Grid"
 import { ClipLoader } from "react-spinners"
+import { useThemeContext } from "./contexts/ThemeContext"
+import LightModeIcon from "@mui/icons-material/LightMode"
+import DarkModeIcon from "@mui/icons-material/DarkMode"
 
 function App() {
   const currencies = useMemo(() => ["USD", "CAD", "EUR"], [])
@@ -16,6 +19,7 @@ function App() {
   const [endDate, setEndDate] = useState(today)
 
   const { data, loading, error }: { data: any; loading: boolean; error: any } = useCurrencyData(baseCurrency, currencies, startDate, endDate)
+  const { toggleColorMode, mode } = useThemeContext()
 
   const getDateMonthsAgo = (monthsAgo: number): string => {
     const date = new Date()
@@ -33,8 +37,10 @@ function App() {
 
   return (
     <Container>
+      <CssBaseline />
       <Box display={"flex"} justifyContent={"center"}>
         <h1>Exchange Rates</h1>
+        <Button onClick={toggleColorMode}>{mode === "dark" ? <LightModeIcon /> : <DarkModeIcon />}</Button>
       </Box>
 
       <Box gap={2} m={1} display={"flex"} justifyContent={"center"}>
