@@ -4,6 +4,7 @@ import { Box, Button, Container, FormControl, InputLabel, MenuItem, Select, Text
 import useCurrencyData from "./hooks/useCurrencyData"
 import LineChart from "./components/LineChart"
 import Grid from "./components/Grid"
+import { ClipLoader } from "react-spinners"
 
 function App() {
   const currencies = useMemo(() => ["USD", "CAD", "EUR"], [])
@@ -14,7 +15,7 @@ function App() {
   const [startDate, setStartDate] = useState(twoYearsAgo)
   const [endDate, setEndDate] = useState(today)
 
-  const data = useCurrencyData(baseCurrency, currencies, startDate, endDate)
+  const { data, loading, error }: { data: any; loading: boolean; error: any } = useCurrencyData(baseCurrency, currencies, startDate, endDate)
 
   const getDateMonthsAgo = (monthsAgo: number): string => {
     const date = new Date()
@@ -27,6 +28,8 @@ function App() {
     date.setFullYear(date.getFullYear() - yearsAgo)
     return date.toISOString().split("T")[0]
   }
+
+  if (error) return <p>Error: {error.message}</p>
 
   return (
     <Container>
@@ -93,11 +96,18 @@ function App() {
         </Button>
       </Box>
 
-      <div>
-        <LineChart data={data} currencies={currencies} baseCurrency={baseCurrency} />
-      </div>
-
-      <Grid data={data} currencies={currencies} baseCurrency={baseCurrency} />
+      {loading ? (
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "50vh" }}>
+          Loading <ClipLoader size={50} color={"#123abc"} loading={loading} />
+        </div>
+      ) : (
+        <>
+          <div>
+            <LineChart data={data} currencies={currencies} baseCurrency={baseCurrency} />
+          </div>
+          <Grid data={data} currencies={currencies} baseCurrency={baseCurrency} />
+        </>
+      )}
     </Container>
   )
 }
