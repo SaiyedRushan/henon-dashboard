@@ -45,4 +45,4 @@ def get_exchange_rates(request):
     'start_date': start_date,
     'end_date': end_date,
     'rates': rates
-  })
+  }, status=200)
