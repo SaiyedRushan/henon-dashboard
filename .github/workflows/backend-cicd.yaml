@@ -9,7 +9,7 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-
+    environment: production
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -26,6 +26,13 @@ jobs:
         working-directory: ./Backend
 
       - name: Run tests
+        env:
+          DEBUG: True
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          PGHOST: ${{ secrets.PGHOST }}
+          PGDATABASE: ${{ secrets.PGDB }}
+          PGUSER: ${{ secrets.PGUSER }}
+          PGPASSWORD: ${{ secrets.PGPWD }}
         run: |
           python manage.py test
         working-directory: ./Backend
