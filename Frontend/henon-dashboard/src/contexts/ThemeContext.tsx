@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo, useState } from "react"
+import React, { createContext, useContext, useEffect, useMemo, useState } from "react"
 import { ThemeProvider, createTheme, PaletteMode } from "@mui/material"
 
 interface ThemeContextProps {
@@ -9,11 +9,18 @@ interface ThemeContextProps {
 const ThemeContext = createContext<ThemeContextProps | undefined>(undefined)
 
 export const ThemeProviderWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [mode, setMode] = useState<PaletteMode>("light")
+  const [mode, setMode] = useState<PaletteMode>(() => {
+    const localMode = localStorage.getItem("mode")
+    return localMode ? (localMode as PaletteMode) : "light"
+  })
 
   const toggleColorMode = () => {
     setMode((prevMode) => (prevMode === "light" ? "dark" : "light"))
   }
+
+  useEffect(() => {
+    localStorage.setItem("mode", mode)
+  }, [mode])
 
   const theme = useMemo(
     () =>

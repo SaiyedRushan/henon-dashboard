@@ -32,6 +32,8 @@ The backend also has a management command that can be used to fetch the exchange
 - python manage.py migrate
 - python manage.py runserver
 
+To run backend tests run `python manage.py test`
+
 ## Screenshots
 
 ![Dashboard](dashboard.png)

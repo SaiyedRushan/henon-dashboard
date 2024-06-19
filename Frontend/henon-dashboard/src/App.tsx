@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 
 import { Box, Button, Container, CssBaseline, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material"
 import useCurrencyData from "./hooks/useCurrencyData"
@@ -14,9 +14,9 @@ function App() {
   const today = new Date().toISOString().split("T")[0]
   const twoYearsAgo = new Date(new Date().setFullYear(new Date().getFullYear() - 2)).toISOString().split("T")[0]
 
-  const [baseCurrency, setBaseCurrency] = useState("USD")
-  const [startDate, setStartDate] = useState(twoYearsAgo)
-  const [endDate, setEndDate] = useState(today)
+  const [baseCurrency, setBaseCurrency] = useState(() => localStorage.getItem("baseCurrency") || "USD")
+  const [startDate, setStartDate] = useState(localStorage.getItem("startDate") || twoYearsAgo)
+  const [endDate, setEndDate] = useState(localStorage.getItem("endDate") || today)
 
   const { data, loading, error }: { data: any; loading: boolean; error: any } = useCurrencyData(baseCurrency, currencies, startDate, endDate)
   const { toggleColorMode, mode } = useThemeContext()
@@ -33,8 +33,13 @@ function App() {
     return date.toISOString().split("T")[0]
   }
 
-  if (error) return <p>Error: {error.message}</p>
+  useEffect(() => {
+    localStorage.setItem("baseCurrency", baseCurrency)
+    localStorage.setItem("startDate", startDate)
+    localStorage.setItem("endDate", endDate)
+  }, [baseCurrency, startDate, endDate])
 
+  if (error) return <p>Error: {error.message}</p>
   return (
     <Container>
       <CssBaseline />
@@ -108,9 +113,7 @@ function App() {
         </div>
       ) : (
         <>
-          <div>
-            <LineChart data={data} currencies={currencies} baseCurrency={baseCurrency} />
-          </div>
+          <LineChart data={data} currencies={currencies} baseCurrency={baseCurrency} />
           <Grid data={data} currencies={currencies} baseCurrency={baseCurrency} />
         </>
       )}
