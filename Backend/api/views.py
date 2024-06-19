@@ -4,8 +4,9 @@ from .models import ExchangeRate
 from .serializers import ExchangeRateSerializer
 import requests
 from django.utils.dateparse import parse_date
+# from django_ratelimit.decorators import ratelimit
 
-
+# @ratelimit(key='ip', rate='20/m')
 @api_view(['GET'])
 def get_exchange_rates(request):
   base_currency = request.GET.get('base_currency')
