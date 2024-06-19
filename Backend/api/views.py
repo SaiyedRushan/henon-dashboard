@@ -4,7 +4,17 @@ from .models import ExchangeRate
 from .serializers import ExchangeRateSerializer
 import requests
 from django.utils.dateparse import parse_date
+from datetime import timedelta, datetime
 # from django_ratelimit.decorators import ratelimit
+
+# this is needed because the API starts sampling data when the range is more than 90 days
+def chunk_date_range(start_date, end_date, delta_days=90):
+    current_date = start_date
+    while current_date < end_date:
+        next_date = min(current_date + timedelta(days=delta_days), end_date)
+        yield current_date, next_date
+        current_date = next_date + timedelta(days=1)
+
 
 # @ratelimit(key='ip', rate='20/m')
 @api_view(['GET'])
@@ -26,19 +36,28 @@ def get_exchange_rates(request):
     
     if exchange_rates.exists():
       print('Using cached exchange rates')
+
       serializer = ExchangeRateSerializer(exchange_rates, many=True)
       for rate in serializer.data:
           rates.setdefault(rate['date'], {})[target_currency] = rate['rate']
+
     else: 
       print('Calling api and saving exchange rates')
-      response = requests.get(f'https://api.frankfurter.app/{start_date}..{end_date}', params={'from': base_currency, 'to': target_currency})
-      if response.status_code == 200:
-        data = response.json()
-        for date, rate in data['rates'].items():
-          rates.setdefault(date, {})[target_currency] = rate[target_currency]
-          ExchangeRate.objects.create(base_currency=base_currency, target_currency=target_currency, date=date, rate=rate[target_currency])
-      else:
-        return Response({'error': 'Failed to fetch exchange rates'}, response.status_code)
+
+      for chunk_start, chunk_end in chunk_date_range(start_date, end_date):
+        response = requests.get(
+          f'https://api.frankfurter.app/{chunk_start}..{chunk_end}',
+          params={'from': base_currency, 'to': target_currency}
+        )
+
+        if response.status_code == 200:
+          data = response.json()
+          for date, rate in data['rates'].items():
+            rates.setdefault(date, {})[target_currency] = rate[target_currency]
+            ExchangeRate.objects.create(base_currency=base_currency, target_currency=target_currency, date=date, rate=rate[target_currency])
+
+        else:
+          return Response({'error': 'Failed to fetch exchange rates'}, response.status_code)
   
   return Response({
     'amount': 1,
