@@ -69,7 +69,11 @@ const LineChart = ({ data, currencies, baseCurrency }: { data: any; currencies: 
     }
   }, [data, baseCurrency, currencies])
 
-  return <Line data={chartData} options={options} />
+  return (
+    <div style={{ position: "relative" }}>
+      <Line data={chartData} options={options} />
+    </div>
+  )
 }
 
 export default LineChart
