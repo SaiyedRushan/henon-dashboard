@@ -1,5 +1,6 @@
 from pathlib import Path
 from decouple import config
+from celery.schedules import crontab
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -34,6 +35,21 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
 ]
+
+CELERY_BROKER_URL = config('CELERY_BROKER_URL')
+
+CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND')
+
+CELERY_BEAT_SCHEDULE = {
+    'update-rates-every-month': {
+        'task': 'api.tasks.run_management_command',
+        'schedule': crontab(day_of_month='1', hour=0, minute=0),
+        'kwargs': {'base_currency': 'USD', 'target_currencies': ['CAD', 'EUR']},  
+    },
+}
+
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
 
 CORS_ALLOW_ALL_ORIGINS = True
 
