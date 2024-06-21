@@ -6,6 +6,7 @@ import requests
 from django.utils.dateparse import parse_date
 from datetime import timedelta, datetime
 # from django_ratelimit.decorators import ratelimit
+from api.tasks import save_rates_to_db
 
 # this is needed because the API starts sampling data when the range is more than 90 days
 def chunk_date_range(start_date, end_date, delta_days=90):
@@ -42,9 +43,10 @@ def get_exchange_rates(request):
           rates.setdefault(rate['date'], {})[target_currency] = rate['rate']
 
     else: 
-      print('Calling api and saving exchange rates')
+      print(f'Calling api and saving exchange rates for {base_currency} to {target_currency}')
 
       for chunk_start, chunk_end in chunk_date_range(start_date, end_date):
+        print(f'Fetching exchange rates from {chunk_start} to {chunk_end}')
         response = requests.get(
           f'https://api.frankfurter.app/{chunk_start}..{chunk_end}',
           params={'from': base_currency, 'to': target_currency}
@@ -54,7 +56,8 @@ def get_exchange_rates(request):
           data = response.json()
           for date, rate in data['rates'].items():
             rates.setdefault(date, {})[target_currency] = rate[target_currency]
-            ExchangeRate.objects.create(base_currency=base_currency, target_currency=target_currency, date=date, rate=rate[target_currency])
+            
+          save_rates_to_db.delay(data['rates'], base_currency, target_currency) #asynchronously save the rates to db background
 
         else:
           return Response({'error': 'Failed to fetch exchange rates'}, response.status_code)

@@ -19,6 +19,8 @@ class Command(BaseCommand):
         last_day_of_previous_month = first_day_of_current_month - timedelta(days=1)
         first_day_of_previous_month = last_day_of_previous_month.replace(day=1)
 
+        print(f'Fetching exchange rates for {base_currency} against {target_currencies} from {first_day_of_previous_month.date()} to {last_day_of_previous_month.date()}')
+
         for target_currency in target_currencies:
             response = requests.get(
                 f'https://api.frankfurter.app/{first_day_of_previous_month.date()}..{last_day_of_previous_month.date()}',
