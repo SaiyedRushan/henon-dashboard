@@ -32,6 +32,10 @@ The backend also has a management command that can be used to fetch the exchange
 - python manage.py migrate
 - python manage.py runserver
 
+- for async tasks, we also need to run celery
+  - celery -A exchange_rates_dashboard worker -l info (--pool=solo on windows)
+  - celery -A exchange_rates_dashboard beat -l info
+
 To run backend tests run `python manage.py test`
 
 ## Screenshots
