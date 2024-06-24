@@ -1,13 +1,13 @@
 # Python and Django specific files and folders
 
-venv/
-
-**pycache**/
+.env
+venv/ \*_/**pycache**/
 _.pyc
 _.pyo
 _.pyd
 _.db
-\*.sqlite3
+_.sqlite3
+.pytest_cache/
 
 # IDE and editor specific files
 
