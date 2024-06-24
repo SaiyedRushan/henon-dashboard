@@ -21,6 +21,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - 80:80
+    env_file:
+      - ./Frontend/henon-dashboard/.env
     depends_on:
       - backend
     networks:

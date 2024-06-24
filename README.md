@@ -12,7 +12,7 @@ The backend also has a management command that can be used to fetch the exchange
 
 - npm i
 - create .env file in the root and add the following
-  VITE_API_URL=http://localhost:8000
+  VITE_BACKEND_URL=http://localhost:8000
 - npm run dev
 
 ### Backend
