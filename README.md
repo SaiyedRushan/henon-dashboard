@@ -16,7 +16,8 @@ The backend also has a management command that can be used to fetch the exchange
 - npm run dev
 
 ### Backend
-***Take a look at the celery-async branch to see, the cron job set to call the management command and celery task set to save rates to db asynchronously.***
+
+**_Take a look at the celery-async branch to see, the cron job set to call the management command and celery task set to save rates to db asynchronously._**
 
 - create a virtual environment and activate it
 - pip install -r requirements.txt
@@ -37,4 +38,5 @@ To run backend tests run `python manage.py test`
 
 ## Screenshots
 
+![demo](demo.gif)
 ![Dashboard](dashboard.png)
