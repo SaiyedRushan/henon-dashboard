@@ -19,3 +19,12 @@ h1 {
 	top: 50px;
 	right: 30px;
 }
+
+
+.shift-up {
+  transition: transform 0.3s ease-in-out !important;
+}
+.shift-up:hover {
+  transform: translateY(-5px);
+}
+
