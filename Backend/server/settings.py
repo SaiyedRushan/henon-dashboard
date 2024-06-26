@@ -20,9 +20,11 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'corsheaders',
     'rest_framework',
+    'django_prometheus',
 ]
 
 MIDDLEWARE = [
+    'django_prometheus.middleware.PrometheusBeforeMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -33,6 +35,7 @@ MIDDLEWARE = [
 
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django_prometheus.middleware.PrometheusAfterMiddleware',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -59,7 +62,7 @@ WSGI_APPLICATION = 'server.wsgi.application'
 
 DATABASES = {
   'default': {
-    'ENGINE': 'django.db.backends.postgresql',
+    'ENGINE': 'django_prometheus.db.backends.postgresql',
     'NAME': config('PGDATABASE'),
     'USER': config('PGUSER'),
     'PASSWORD': config('PGPASSWORD'),
@@ -70,6 +73,8 @@ DATABASES = {
     },
   }
 }
+
+PROMETHEUS_EXPORT_MIGRATIONS = False
 
 AUTH_PASSWORD_VALIDATORS = [
     {
